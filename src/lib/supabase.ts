@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL;
+const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL || 'https://kwhrmemjevdsmpkfhann.supabase.co';
 const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials missing. Please check your environment variables.');
+if (!supabaseAnonKey) {
+  console.error('CRITICAL: VITE_SUPABASE_ANON_KEY is missing. Please add it to your environment variables or .env file.');
 }
 
 export const supabase = createClient(
-  supabaseUrl || 'https://kwhrmemjevdsmpkfhann.supabase.co',
-  supabaseAnonKey || 'placeholder'
+  supabaseUrl,
+  supabaseAnonKey || 'MISSING_ANON_KEY'
 );

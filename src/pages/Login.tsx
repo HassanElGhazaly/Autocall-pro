@@ -24,7 +24,26 @@ export default function Login() {
 
       if (loginError) throw loginError;
 
-      navigate('/setup');
+      // App.tsx will handle the redirect via onAuthStateChange
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      if (error) throw error;
+      alert('Password reset link sent to your email!');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -125,6 +144,15 @@ export default function Login() {
             {loading ? 'Logging in...' : 'Login'} <ArrowRight size={18} />
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <button 
+            onClick={handleForgotPassword}
+            className="text-sm text-gray-500 hover:text-white transition font-medium"
+          >
+            Forgot Password?
+          </button>
+        </div>
 
         <p className="mt-8 text-center text-gray-500 text-sm">
           Don't have an account? <Link to="/signup" className="text-white font-bold hover:text-purple-400 transition">Sign Up</Link>

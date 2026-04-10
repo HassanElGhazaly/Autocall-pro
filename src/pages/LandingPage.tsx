@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Mic, 
   Globe, 
@@ -20,8 +20,16 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function LandingPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+  }, []);
   const scrollToPricing = () => {
     const pricingSection = document.getElementById('pricing');
     if (pricingSection) {
@@ -53,9 +61,15 @@ export default function LandingPage() {
           <a href="tel:+16465170133" className="flex items-center gap-2 text-green-400 hover:text-green-300 transition font-bold">
             <Phone size={16} /> +1 (646) 517-0133
           </a>
-          <Link to="/login" className="px-5 py-2 rounded-full border border-white/10 hover:bg-white/5 transition text-white">
-            Contractor Login
-          </Link>
+          {!isAuthenticated ? (
+            <Link to="/login" className="px-5 py-2 rounded-full border border-white/10 hover:bg-white/5 transition text-white">
+              Contractor Login
+            </Link>
+          ) : (
+            <Link to="/dashboard" className="px-5 py-2 rounded-full bg-green-600 hover:bg-green-500 transition text-white font-bold">
+              Go to Dashboard
+            </Link>
+          )}
         </div>
       </nav>
 
@@ -98,8 +112,11 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-5 justify-center items-center"
         >
-          <Link to="/signup" className="bg-white text-black font-bold px-10 py-4 rounded-full transition-all hover:bg-green-500 hover:text-white hover:scale-105 flex items-center gap-2">
-            Get Started Now <ChevronRight size={18} />
+          <Link 
+            to={isAuthenticated ? "/dashboard" : "/signup"} 
+            className="bg-white text-black font-bold px-10 py-4 rounded-full transition-all hover:bg-green-500 hover:text-white hover:scale-105 flex items-center gap-2"
+          >
+            {isAuthenticated ? "Go to Dashboard" : "Get Started Now"} <ChevronRight size={18} />
           </Link>
           <button className="bg-white/5 border border-white/10 text-white font-medium px-10 py-4 rounded-full hover:bg-white/10 transition">
             Watch Demo

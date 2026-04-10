@@ -31,8 +31,7 @@ export default function Signup() {
       if (signupError) throw signupError;
 
       if (data.user) {
-        // Profile is created via DB trigger
-        navigate('/setup');
+        // App.tsx will handle the redirect via onAuthStateChange
       }
     } catch (err: any) {
       setError(err.message);
