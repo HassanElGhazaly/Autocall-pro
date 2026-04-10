@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { 
   Mic, 
   Globe, 
@@ -11,41 +11,49 @@ import {
   BarChart3, 
   ChevronRight, 
   Check, 
-  UserPlus, 
-  Database, 
   TrendingUp,
   X,
-  Minus,
-  Phone
+  Phone,
+  ShieldCheck,
+  ArrowRight,
+  Play
 } from "lucide-react";
 import { motion } from "motion/react";
-import { Link } from "react-router-dom";
-import { supabase } from "../lib/supabase";
 
 export default function LandingPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [calling, setCalling] = useState(false);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
-  }, []);
-  const scrollToPricing = () => {
-    const pricingSection = document.getElementById('pricing');
-    if (pricingSection) {
-      pricingSection.scrollIntoView({ behavior: 'smooth' });
+  const handleCallMe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCalling(true);
+    
+    // VAPI CONFIGURATION PLACEHOLDERS
+    // const VAPI_API_KEY = 'YOUR_VAPI_API_KEY';
+    // const ASSISTANT_ID = 'YOUR_ASSISTANT_ID';
+    
+    try {
+      console.log('Triggering call to:', phoneNumber);
+      // Logic to trigger Vapi call would go here
+      setTimeout(() => {
+        alert('Alex is calling you now! (Vapi integration placeholder triggered)');
+        setCalling(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Call failed:', error);
+      setCalling(false);
     }
   };
 
-  const scrollToHowItWorks = () => {
-    const section = document.getElementById('how-it-works');
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white selection:bg-purple-500/30 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#030303] text-white selection:bg-green-500/30 font-sans overflow-x-hidden">
       {/* Navbar */}
       <nav className="flex items-center justify-between px-8 py-6 border-b border-white/10 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
@@ -55,21 +63,13 @@ export default function LandingPage() {
           <span className="text-xl font-bold tracking-tighter">AutoCall<span className="text-green-500">.pro</span></span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-          <a href="#features" className="hover:text-white transition">Features</a>
-          <button onClick={scrollToHowItWorks} className="hover:text-white transition">How it Works</button>
-          <button onClick={scrollToPricing} className="hover:text-white transition">Pricing</button>
+          <button onClick={() => scrollToSection('features')} className="hover:text-white transition">Features</button>
+          <button onClick={() => scrollToSection('lsa')} className="hover:text-white transition">LSA Protection</button>
+          <button onClick={() => scrollToSection('demo')} className="hover:text-white transition">Live Demo</button>
+          <button onClick={() => scrollToSection('pricing')} className="hover:text-white transition">Pricing</button>
           <a href="tel:+16465170133" className="flex items-center gap-2 text-green-400 hover:text-green-300 transition font-bold">
             <Phone size={16} /> +1 (646) 517-0133
           </a>
-          {!isAuthenticated ? (
-            <Link to="/login" className="px-5 py-2 rounded-full border border-white/10 hover:bg-white/5 transition text-white">
-              Contractor Login
-            </Link>
-          ) : (
-            <Link to="/dashboard" className="px-5 py-2 rounded-full bg-green-600 hover:bg-green-500 transition text-white font-bold">
-              Go to Dashboard
-            </Link>
-          )}
         </div>
       </nav>
 
@@ -85,7 +85,7 @@ export default function LandingPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
-          AI Front-Desk for Contractors
+          The 24/7 AI Receptionist for Your Home Service Business
         </motion.div>
         
         <motion.h1 
@@ -94,7 +94,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-6xl md:text-8xl font-black tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-gray-600"
         >
-          Alex Picks Up While <br className="hidden md:block" /> You're On The Job.
+          Never Miss a <br className="hidden md:block" /> $5,000 Lead Again.
         </motion.h1>
         
         <motion.p 
@@ -103,7 +103,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
         >
-          The AI Receptionist for Contractors. Alex answers calls, qualifies leads, and books your calendar 24/7. Never miss a lead again.
+          Specifically built for Roofers, Plumbers, and HVAC Contractors. Alex answers your calls instantly, qualifies every lead, and books jobs directly into your calendar while you're in the field.
         </motion.p>
 
         <motion.div 
@@ -112,84 +112,156 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-5 justify-center items-center"
         >
-          <Link 
-            to={isAuthenticated ? "/dashboard" : "/signup"} 
-            className="bg-white text-black font-bold px-10 py-4 rounded-full transition-all hover:bg-green-500 hover:text-white hover:scale-105 flex items-center gap-2"
+          <button 
+            onClick={() => scrollToSection('demo')}
+            className="bg-green-600 text-white font-bold px-10 py-4 rounded-full transition-all hover:bg-green-500 hover:scale-105 flex items-center gap-2 shadow-xl shadow-green-600/20"
           >
-            {isAuthenticated ? "Go to Dashboard" : "Get Started Now"} <ChevronRight size={18} />
-          </Link>
-          <button className="bg-white/5 border border-white/10 text-white font-medium px-10 py-4 rounded-full hover:bg-white/10 transition">
-            Watch Demo
+            Get a Call From Alex <ChevronRight size={18} />
           </button>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-24 relative group"
-        >
-          <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-blue-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-          <div className="relative border border-white/10 rounded-3xl bg-[#080808] aspect-[16/9] flex flex-col items-center justify-center overflow-hidden shadow-2xl text-center p-8">
-            <div className="flex gap-2 items-center mb-4">
-              {[...Array(20)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className="w-1.5 bg-green-500 rounded-full animate-pulse"
-                  style={{
-                    height: `${Math.random() * 60 + 20}px`, 
-                    animationDelay: `${i * 0.1}s`
-                  }}
-                ></div>
-              ))}
-            </div>
-            <span className="text-gray-500 font-mono text-xs tracking-[0.3em] uppercase">Alex Engine Active</span>
-          </div>
+          <button 
+            onClick={() => scrollToSection('pricing')}
+            className="bg-white/5 border border-white/10 text-white font-medium px-10 py-4 rounded-full hover:bg-white/10 transition"
+          >
+            View Pricing
+          </button>
         </motion.div>
       </section>
 
-      {/* Live Demo Section */}
-      <section className="px-8 py-20 bg-green-600/5 border-y border-green-500/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-black mb-8">Talk to Alex Live</h2>
-          <div className="flex flex-col items-center justify-center gap-6">
-            <a 
-              href="tel:+16465170133" 
-              className="group relative flex items-center gap-4 px-8 py-6 bg-white text-black rounded-3xl hover:scale-105 transition-transform shadow-2xl shadow-green-500/20"
-            >
-              <div className="relative">
-                <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
-                <div className="relative w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white">
-                  <Phone size={24} className="animate-pulse" />
+      {/* LSA Section */}
+      <section id="lsa" className="px-8 py-32 bg-white/[0.02] border-y border-white/10 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-8">
+              Stop Wasting Your <br />
+              <span className="text-green-500">Google LSA Budget</span>
+            </h2>
+            <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+              <p>
+                Google Local Services Ads (LSA) charge you for <span className="text-white font-bold text-xl">every single lead</span>. When you miss a call, you don't just lose that job—you lose the money you paid for the click.
+              </p>
+              <p>
+                Even worse, Google tracks your response time. Missed calls signal that you're unavailable, causing your <span className="text-white font-bold">ranking to drop</span> and your competitors to take your spot at the top.
+              </p>
+              <p className="bg-green-500/10 border-l-4 border-green-500 p-6 text-white font-medium italic">
+                "Alex ensures every call is answered instantly, 24/7, keeping your ranking high and your calendar full."
+              </p>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="absolute -inset-4 bg-green-500/20 rounded-3xl blur-2xl"></div>
+            <div className="relative bg-[#080808] border border-white/10 rounded-3xl p-8 shadow-2xl">
+              <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                    <TrendingUp className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">LSA Performance</p>
+                    <p className="text-xl font-bold">Top Provider Status</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-green-500 font-black text-2xl">100%</p>
+                  <p className="text-[10px] text-gray-500 uppercase">Response Rate</p>
                 </div>
               </div>
-              <span className="text-3xl md:text-5xl font-black tracking-tighter">+1 (646) 517-0133</span>
-            </a>
-            <p className="text-gray-400 text-lg max-w-2xl leading-relaxed">
-              Call Alex right now. Experience how he handles an inquiry, qualifies the lead, and represents your brand.
-            </p>
+              <div className="space-y-6">
+                {[
+                  { label: 'Ad Ranking', value: '#1 in Your Area', color: 'bg-green-500' },
+                  { label: 'Lead Quality', value: 'High Intent Only', color: 'bg-blue-500' },
+                  { label: 'ROI', value: '4.2x Increase', color: 'bg-green-500' },
+                ].map((stat, i) => (
+                  <div key={i}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-bold text-gray-400">{stat.label}</span>
+                      <span className="text-sm font-bold text-white">{stat.value}</span>
+                    </div>
+                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                      <div className={`h-full ${stat.color} w-full`}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="px-8 py-32 bg-white/[0.01]">
+      {/* Vapi Demo Section */}
+      <section id="demo" className="px-8 py-32 bg-green-600/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-8">
+            Experience the Future: <br />
+            <span className="text-green-500 italic">Get a Call from Alex Right Now</span>
+          </h2>
+          <p className="text-gray-400 text-xl mb-12 max-w-2xl mx-auto">
+            Enter your number below and Alex will call you in seconds to demonstrate how he handles a typical roofing or plumbing inquiry.
+          </p>
+
+          <form onSubmit={handleCallMe} className="relative max-w-md mx-auto group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+            <div className="relative flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-400 font-bold border-r border-white/10 pr-3">
+                  <img src="https://flagcdn.com/w20/us.png" alt="USA" className="w-5" />
+                  <span>+1</span>
+                </div>
+                <input 
+                  type="tel" 
+                  required
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="(555) 000-0000"
+                  className="w-full bg-[#080808] border border-white/10 rounded-2xl py-5 pl-20 pr-4 focus:outline-none focus:border-green-500 transition text-xl font-bold"
+                />
+              </div>
+              <button 
+                type="submit"
+                disabled={calling}
+                className="bg-white text-black font-black px-8 py-5 rounded-2xl hover:bg-green-500 hover:text-white transition-all shadow-xl shadow-green-600/20 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {calling ? 'Connecting...' : 'Call Me Now'} <Play size={20} fill="currentColor" />
+              </button>
+            </div>
+          </form>
+          <p className="mt-6 text-gray-500 text-sm">
+            *Alex will call you once for demonstration purposes. No spam, ever.
+          </p>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="features" className="px-8 py-32">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-green-500/50 transition group">
-            <Zap className="text-green-500 mb-6 group-hover:scale-110 transition-transform" size={32} />
-            <h3 className="text-2xl font-bold mb-4">24/7 Availability</h3>
-            <p className="text-gray-400">Alex answers every call, even at 3 AM or when you're on a roof. Never let a job go to a competitor.</p>
-          </div>
-          <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-blue-500/50 transition group">
-            <Globe className="text-blue-500 mb-6 group-hover:scale-110 transition-transform" size={32} />
-            <h3 className="text-2xl font-bold mb-4">Local Accents</h3>
-            <p className="text-gray-400">Alex speaks with a natural, local accent that builds trust with your US-based customers instantly.</p>
-          </div>
-          <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-green-500/50 transition group">
-            <BarChart3 className="text-green-500 mb-6 group-hover:scale-110 transition-transform" size={32} />
-            <h3 className="text-2xl font-bold mb-4">Lead Qualification</h3>
-            <p className="text-gray-400">Alex filters out tire-kickers and identifies high-value emergency jobs before they hit your phone.</p>
-          </div>
+          {[
+            { 
+              icon: Zap, 
+              title: 'Instant Response', 
+              desc: 'Alex answers in under 1 second. No more "I\'ll call you back" while your lead calls the next guy on Google.',
+              color: 'text-green-500',
+              border: 'hover:border-green-500/50'
+            },
+            { 
+              icon: Globe, 
+              title: 'US-Based Voice', 
+              desc: 'Alex uses high-fidelity neural voices that sound exactly like a professional US-based office manager.',
+              color: 'text-blue-500',
+              border: 'hover:border-blue-500/50'
+            },
+            { 
+              icon: BarChart3, 
+              title: 'Smart Qualification', 
+              desc: 'Alex asks the right questions: What\'s the emergency? What\'s your address? Are you the homeowner?',
+              color: 'text-green-500',
+              border: 'hover:border-green-500/50'
+            }
+          ].map((feature, i) => (
+            <div key={i} className={`p-10 rounded-3xl bg-white/[0.03] border border-white/10 ${feature.border} transition group`}>
+              <feature.icon className={`${feature.color} mb-6 group-hover:scale-110 transition-transform`} size={40} />
+              <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+              <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -204,9 +276,9 @@ export default function LandingPage() {
 
           <div className="grid gap-4">
             {[
-              { label: 'Small Jobs', desc: 'e.g., HVAC Repair', loss: '$2,500', color: 'bg-red-500/5' },
-              { label: 'Medium Projects', desc: 'e.g., Roofing', loss: '$7,500', color: 'bg-red-500/10' },
-              { label: 'Big Contracts', desc: 'e.g., Remodeling', loss: '$25,000+', color: 'bg-red-500/20' },
+              { label: 'HVAC Repair', desc: 'Average Ticket: $500', loss: '$2,500', color: 'bg-red-500/5' },
+              { label: 'Roofing Job', desc: 'Average Ticket: $1,500', loss: '$7,500', color: 'bg-red-500/10' },
+              { label: 'Remodeling Contract', desc: 'Average Ticket: $5,000+', loss: '$25,000+', color: 'bg-red-500/20' },
             ].map((item, i) => (
               <div key={i} className={`flex flex-col md:flex-row items-center justify-between p-8 rounded-xl border border-red-500/30 ${item.color} backdrop-blur-sm hover:border-red-500 transition-colors group`}>
                 <div className="text-center md:text-left mb-4 md:mb-0">
@@ -220,107 +292,40 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-
-          <div className="mt-16 text-center">
-            <p className="text-2xl md:text-3xl font-black text-white leading-tight italic">
-              "Whether you're losing $2k or $20k, <br className="hidden md:block" /> 
-              Alex stops the bleeding for a fraction of the cost."
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* How it Works Section */}
-      <section id="how-it-works" className="px-8 py-32 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4">How it Works</h2>
-            <p className="text-gray-400 text-lg">Three simple steps to automate your outbound.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-            {/* Connecting Lines (Desktop) */}
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-1/2 z-0"></div>
-            
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-2xl bg-green-600/20 border border-green-500/30 flex items-center justify-center mb-6 shadow-lg shadow-green-500/10">
-                <UserPlus className="text-green-500" size={32} />
-              </div>
-              <div className="bg-[#030303] px-4">
-                <span className="text-xs font-bold text-green-500 uppercase tracking-widest mb-2 block">Step 1</span>
-                <h3 className="text-2xl font-bold mb-4">Connect your line</h3>
-                <p className="text-gray-400">Forward your business number to Alex. Setup takes less than 5 minutes.</p>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/10">
-                <Database className="text-blue-500" size={32} />
-              </div>
-              <div className="bg-[#030303] px-4">
-                <span className="text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 block">Step 2</span>
-                <h3 className="text-2xl font-bold mb-4">Alex Qualifies</h3>
-                <p className="text-gray-400">Alex finds out if it's an emergency, a quote request, or a booking inquiry.</p>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-2xl bg-green-600/20 border border-green-500/30 flex items-center justify-center mb-6 shadow-lg shadow-green-500/10">
-                <TrendingUp className="text-green-500" size={32} />
-              </div>
-              <div className="bg-[#030303] px-4">
-                <span className="text-xs font-bold text-green-500 uppercase tracking-widest mb-2 block">Step 3</span>
-                <h3 className="text-2xl font-bold mb-4">Job Added</h3>
-                <p className="text-gray-400">The job is added to your calendar or CRM, and you get a text notification immediately.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Guarantee Section */}
-      <section className="px-8 py-12">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-900/40 to-blue-900/40 border border-green-500/30 rounded-3xl p-8 text-center backdrop-blur-sm">
-          <h3 className="text-2xl md:text-3xl font-black mb-4 text-white">The 5-Job Guarantee</h3>
-          <p className="text-lg text-gray-200 leading-relaxed">
-            If Alex doesn't save you at least <span className="text-green-400 font-bold">5 jobs</span> in your first 30 days, we'll refund every penny. <span className="underline decoration-green-500 underline-offset-4">No questions asked.</span>
-          </p>
         </div>
       </section>
 
       {/* Pricing */}
       <section id="pricing" className="px-8 py-32 relative">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4">Simple Pricing</h2>
-          <p className="text-gray-400 mb-16 text-lg">Scale your outbound with a plan that fits.</p>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4">Simple, ROI-Focused Pricing</h2>
+          <p className="text-gray-400 mb-16 text-lg">Alex pays for himself with the very first job he saves you.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-            {/* Solo Contractor Plan */}
             <div className="p-10 rounded-3xl bg-white/[0.03] border border-white/10 flex flex-col items-start hover:border-white/20 transition">
               <span className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">The Lead Saver</span>
               <div className="flex items-baseline gap-1 mb-4 text-4xl font-black">$149<span className="text-sm text-gray-500 font-normal">/mo</span></div>
-              <p className="text-gray-400 text-sm mb-8">Catch every call while you're in the field. Never let a $500 job go to voicemail again.</p>
+              <p className="text-gray-400 text-sm mb-8">Perfect for solo contractors. Catch every call while you're in the field.</p>
               <div className="space-y-4 mb-10 flex-1">
                 <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> 300 Minutes included</div>
                 <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> 1 AI Receptionist</div>
                 <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> SMS Notifications</div>
               </div>
-              <Link to="/signup" className="w-full py-4 rounded-2xl border border-white/10 hover:bg-white hover:text-black font-bold transition text-center">Get Started</Link>
+              <button onClick={() => scrollToSection('demo')} className="w-full py-4 rounded-2xl border border-white/10 hover:bg-white hover:text-black font-bold transition text-center">Get Started</button>
             </div>
 
-            {/* Service Team Plan */}
             <div className="p-10 rounded-3xl bg-green-600/10 border-2 border-green-500/50 flex flex-col items-start relative overflow-hidden hover:bg-green-600/20 transition">
               <div className="absolute top-4 right-4 bg-green-500 text-[10px] font-black px-3 py-1 rounded-full uppercase text-white">Best Value</div>
               <span className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">The Business Scaler</span>
               <div className="flex items-baseline gap-1 mb-4 text-5xl font-black">$499<span className="text-sm text-gray-500 font-normal">/mo</span></div>
-              <p className="text-green-100 text-sm mb-8">Your 24/7 AI Sales Team. Fully integrated with your CRM and Calendar. Replaces a $3k/mo human receptionist.</p>
+              <p className="text-green-100 text-sm mb-8">For growing teams. Fully integrated with your CRM and Calendar.</p>
               <div className="space-y-4 mb-10 flex-1">
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> 1500 Minutes included</div>
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Unlimited Receptionists</div>
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> CRM & Calendar Sync</div>
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Priority Emergency Routing</div>
               </div>
-              <Link to="/signup" className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold transition shadow-xl shadow-green-600/20 text-center">Go Pro Now</Link>
+              <button onClick={() => scrollToSection('demo')} className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold transition shadow-xl shadow-green-600/20 text-center">Go Pro Now</button>
             </div>
           </div>
         </div>
@@ -345,11 +350,11 @@ export default function LandingPage() {
               </thead>
               <tbody className="divide-y divide-white/5">
                 {[
-                  { feature: 'Availability', alex: '24/7', human: '9-5 only', alexCheck: true, humanCheck: false },
-                  { feature: 'Monthly Cost', alex: '$499/mo', human: '$3,000+/mo', alexCheck: true, humanCheck: false },
-                  { feature: 'Accuracy', alex: '100% Data Sync', human: 'Manual Entry', alexCheck: true, humanCheck: false },
-                  { feature: 'Sick Days', alex: 'Zero', human: '15+ days', alexCheck: true, humanCheck: false },
-                  { feature: 'CRM Integration', alex: 'Instant', human: 'Slow', alexCheck: true, humanCheck: false },
+                  { feature: 'Availability', alex: '24/7', human: '9-5 only' },
+                  { feature: 'Monthly Cost', alex: '$499/mo', human: '$3,000+/mo' },
+                  { feature: 'Accuracy', alex: '100% Data Sync', human: 'Manual Entry' },
+                  { feature: 'Sick Days', alex: 'Zero', human: '15+ days' },
+                  { feature: 'CRM Integration', alex: 'Instant', human: 'Slow' },
                 ].map((row, i) => (
                   <tr key={i} className="hover:bg-white/[0.02] transition-colors">
                     <td className="p-6 font-medium text-gray-300">{row.feature}</td>
@@ -377,6 +382,25 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Final Guarantee */}
+      <section className="px-8 py-32">
+        <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-900/40 to-blue-900/40 border border-green-500/30 rounded-3xl p-12 text-center backdrop-blur-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <ShieldCheck size={120} />
+          </div>
+          <h3 className="text-3xl md:text-5xl font-black mb-6 text-white">The 5-Job Guarantee</h3>
+          <p className="text-xl text-gray-200 leading-relaxed mb-8">
+            If Alex doesn't save you at least <span className="text-green-400 font-bold">5 jobs</span> in your first 30 days, we'll refund every penny. <span className="underline decoration-green-500 underline-offset-4">No questions asked.</span>
+          </p>
+          <button 
+            onClick={() => scrollToSection('demo')}
+            className="bg-white text-black font-black px-12 py-5 rounded-full hover:bg-green-500 hover:text-white transition-all flex items-center gap-2 mx-auto"
+          >
+            Start Your Risk-Free Trial <ArrowRight size={20} />
+          </button>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="px-8 py-16 border-t border-white/10 text-center text-gray-600 text-sm">
         <div className="mb-6 flex flex-col items-center gap-4">
@@ -385,7 +409,7 @@ export default function LandingPage() {
           </a>
           <p className="max-w-md mx-auto">The AI Front-Desk for Contractors. Available 24/7 to save your leads.</p>
         </div>
-        <p>© 2026 AutoCall.pro. Built for the future of voice.</p>
+        <p>© 2026 AutoCall Pro. Built for the future of home services.</p>
       </footer>
     </div>
   );
