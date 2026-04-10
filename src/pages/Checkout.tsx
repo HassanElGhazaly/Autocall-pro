@@ -1,30 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { motion } from 'motion/react';
-import { Mic, Check, ShieldCheck, Zap, TrendingUp } from 'lucide-react';
+import { Mic, Check, ShieldCheck } from 'lucide-react';
 
 const stripePromise = loadStripe((import.meta as any).env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder');
 
 export default function Checkout() {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/signup');
-      } else {
-        setUser(user);
-      }
-    };
-    checkUser();
-  }, [navigate]);
-
   const handleCheckout = async (priceId: string) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch('/api/create-checkout-session', {

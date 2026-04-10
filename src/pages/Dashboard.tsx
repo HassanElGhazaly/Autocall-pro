@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/AuthContext';
 import { motion } from 'motion/react';
 import { 
   Phone, 
@@ -9,51 +9,18 @@ import {
   TrendingUp, 
   LogOut, 
   Settings, 
-  MessageSquare,
   BarChart3,
   Clock
 } from 'lucide-react';
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-      setUser(user);
-
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-      
-      setProfile(profileData);
-      setLoading(false);
-    };
-
-    getProfile();
-  }, [navigate]);
-
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     navigate('/');
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#030303] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#030303] text-white font-sans">
@@ -98,8 +65,12 @@ export default function Dashboard() {
       <main className="lg:ml-64 p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
           <div>
-            <h1 className="text-3xl font-black tracking-tight">Welcome back, {profile?.business_name || user?.email?.split('@')[0]}</h1>
-            <p className="text-gray-400">Alex is active and handling your calls.</p>
+            <h1 className="text-3xl font-black tracking-tight">
+              Welcome back, {profile?.business_name || user?.email?.split('@')[0]}
+            </h1>
+            <p className="text-gray-400">
+              Account: <span className="text-green-500 font-medium">{user?.email}</span>
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 text-xs font-bold flex items-center gap-2">

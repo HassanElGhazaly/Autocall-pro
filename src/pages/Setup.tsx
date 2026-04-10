@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/AuthContext';
 import { motion } from 'motion/react';
 import { Mic, Briefcase, Phone, DollarSign, ArrowRight } from 'lucide-react';
 
@@ -9,23 +10,12 @@ export default function Setup() {
   const [phone, setPhone] = useState('');
   const [avgTicket, setAvgTicket] = useState('');
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const { user, refreshProfile } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/signup');
-      } else {
-        setUser(user);
-      }
-    };
-    checkUser();
-  }, [navigate]);
 
   const handleSetup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     setLoading(true);
 
     try {
@@ -41,6 +31,7 @@ export default function Setup() {
 
       if (error) throw error;
 
+      await refreshProfile();
       navigate('/checkout');
     } catch (err: any) {
       console.error('Setup Error:', err.message);
