@@ -16,13 +16,18 @@ import {
   Phone,
   ShieldCheck,
   ArrowRight,
-  Play
+  Play,
+  Mail,
+  CheckCircle2
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function LandingPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [calling, setCalling] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [modalStep, setModalStep] = useState(1);
+  const [confirmPhone, setConfirmPhone] = useState('');
 
   const handleCallMe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +50,17 @@ export default function LandingPage() {
     }
   };
 
+  const handlePricingClick = () => {
+    setShowPricingModal(true);
+    setModalStep(1);
+    setConfirmPhone('');
+  };
+
+  const handleConfirmPhone = (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalStep(2);
+  };
+
   const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
@@ -54,6 +70,86 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white selection:bg-green-500/30 font-sans overflow-x-hidden">
+      {/* Pricing Modal */}
+      <AnimatePresence>
+        {showPricingModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPricingModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-[#080808] border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden"
+            >
+              <button 
+                onClick={() => setShowPricingModal(false)}
+                className="absolute top-6 right-6 text-gray-500 hover:text-white transition"
+              >
+                <X size={24} />
+              </button>
+
+              {modalStep === 1 ? (
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Zap className="text-green-500" size={32} />
+                  </div>
+                  <h3 className="text-2xl font-black mb-2">Excellent choice.</h3>
+                  <p className="text-gray-400 mb-8">Confirm the phone number you want to automate with Alex AI.</p>
+                  
+                  <form onSubmit={handleConfirmPhone} className="space-y-4">
+                    <div className="relative">
+                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                      <input 
+                        type="tel" 
+                        required
+                        autoFocus
+                        value={confirmPhone}
+                        onChange={(e) => setConfirmPhone(e.target.value)}
+                        placeholder="(555) 000-0000"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition font-bold"
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-black transition shadow-xl shadow-green-600/20"
+                    >
+                      Confirm & Continue
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <motion.div 
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20"
+                  >
+                    <CheckCircle2 className="text-white" size={40} />
+                  </motion.div>
+                  <h3 className="text-3xl font-black mb-4">Request received!</h3>
+                  <div className="space-y-4 text-gray-400 leading-relaxed mb-8">
+                    <p>We are generating your setup invoice and sending it to your email.</p>
+                    <p className="text-white font-medium">Check your inbox to complete the activation.</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowPricingModal(false)}
+                    className="px-8 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition"
+                  >
+                    Got it, thanks!
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Navbar */}
       <nav className="flex items-center justify-between px-8 py-6 border-b border-white/10 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
@@ -311,7 +407,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> 1 AI Receptionist</div>
                 <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> SMS Notifications</div>
               </div>
-              <button onClick={() => scrollToSection('demo')} className="w-full py-4 rounded-2xl border border-white/10 hover:bg-white hover:text-black font-bold transition text-center">Get Started</button>
+              <button onClick={handlePricingClick} className="w-full py-4 rounded-2xl border border-white/10 hover:bg-white hover:text-black font-bold transition text-center">Get Started</button>
             </div>
 
             <div className="p-10 rounded-3xl bg-green-600/10 border-2 border-green-500/50 flex flex-col items-start relative overflow-hidden hover:bg-green-600/20 transition">
@@ -325,7 +421,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> CRM & Calendar Sync</div>
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Priority Emergency Routing</div>
               </div>
-              <button onClick={() => scrollToSection('demo')} className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold transition shadow-xl shadow-green-600/20 text-center">Go Pro Now</button>
+              <button onClick={handlePricingClick} className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold transition shadow-xl shadow-green-600/20 text-center">Go Pro Now</button>
             </div>
           </div>
         </div>
@@ -393,7 +489,7 @@ export default function LandingPage() {
             If Alex doesn't save you at least <span className="text-green-400 font-bold">5 jobs</span> in your first 30 days, we'll refund every penny. <span className="underline decoration-green-500 underline-offset-4">No questions asked.</span>
           </p>
           <button 
-            onClick={() => scrollToSection('demo')}
+            onClick={handlePricingClick}
             className="bg-white text-black font-black px-12 py-5 rounded-full hover:bg-green-500 hover:text-white transition-all flex items-center gap-2 mx-auto"
           >
             Start Your Risk-Free Trial <ArrowRight size={20} />
