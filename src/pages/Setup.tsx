@@ -53,10 +53,10 @@ export default function Setup() {
   return (
     <div className="min-h-screen bg-[#030303] text-white flex flex-col items-center justify-center p-6 font-sans">
       <div className="flex items-center gap-2 mb-12">
-        <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+        <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
           <Mic size={20} className="text-white" />
         </div>
-        <span className="text-xl font-bold tracking-tighter">AutoCall<span className="text-purple-500">.pro</span></span>
+        <span className="text-xl font-bold tracking-tighter">AutoCall<span className="text-green-500">.pro</span></span>
       </div>
 
       <motion.div 
@@ -77,7 +77,7 @@ export default function Setup() {
                 required
                 value={services}
                 onChange={(e) => setServices(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-purple-500 transition"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition"
                 placeholder="e.g. Roofing, HVAC, Plumbing"
               />
             </div>
@@ -92,7 +92,7 @@ export default function Setup() {
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-purple-500 transition"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition"
                 placeholder="+1 (555) 000-0000"
               />
             </div>
@@ -107,7 +107,7 @@ export default function Setup() {
                 required
                 value={avgTicket}
                 onChange={(e) => setAvgTicket(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-purple-500 transition"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition"
                 placeholder="e.g. 500"
               />
             </div>
@@ -116,7 +116,7 @@ export default function Setup() {
           <button 
             type="submit"
             disabled={loading}
-            className="w-full py-4 rounded-2xl bg-white text-black font-bold transition hover:bg-purple-500 hover:text-white flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-2xl bg-white text-black font-bold transition hover:bg-green-500 hover:text-white flex items-center justify-center gap-2"
           >
             {loading ? 'Saving...' : 'Continue to Checkout'} <ArrowRight size={18} />
           </button>

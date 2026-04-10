@@ -60,10 +60,10 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-[#030303] text-white flex flex-col items-center py-20 px-6 font-sans">
       <div className="flex items-center gap-2 mb-16">
-        <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+        <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
           <Mic size={20} className="text-white" />
         </div>
-        <span className="text-xl font-bold tracking-tighter">AutoCall<span className="text-purple-500">.pro</span></span>
+        <span className="text-xl font-bold tracking-tighter">AutoCall<span className="text-green-500">.pro</span></span>
       </div>
 
       <div className="text-center mb-16 max-w-2xl">
@@ -81,9 +81,9 @@ export default function Checkout() {
           <div className="flex items-baseline gap-1 mb-4 text-4xl font-black">$149<span className="text-sm text-gray-500 font-normal">/mo</span></div>
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">Catch every call while you're in the field. Never let a $500 job go to voicemail again.</p>
           <div className="space-y-4 mb-10 flex-1">
-            <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-purple-500" /> 300 Minutes included</div>
-            <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-purple-500" /> 1 AI Receptionist</div>
-            <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-purple-500" /> SMS Notifications</div>
+            <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> 300 Minutes included</div>
+            <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> 1 AI Receptionist</div>
+            <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> SMS Notifications</div>
           </div>
           <button 
             onClick={() => handleCheckout('price_lead_saver_placeholder')}
@@ -97,22 +97,22 @@ export default function Checkout() {
         {/* Business Scaler Plan */}
         <motion.div 
           whileHover={{ y: -5 }}
-          className="p-10 rounded-3xl bg-purple-600/10 border-2 border-purple-500/50 flex flex-col items-start relative overflow-hidden hover:bg-purple-600/20 transition"
+          className="p-10 rounded-3xl bg-green-600/10 border-2 border-green-500/50 flex flex-col items-start relative overflow-hidden hover:bg-green-600/20 transition"
         >
-          <div className="absolute top-4 right-4 bg-purple-500 text-[10px] font-black px-3 py-1 rounded-full uppercase text-white">Best Value</div>
-          <span className="text-xs font-bold uppercase tracking-widest text-purple-400 mb-2">The Business Scaler</span>
+          <div className="absolute top-4 right-4 bg-green-500 text-[10px] font-black px-3 py-1 rounded-full uppercase text-white">Best Value</div>
+          <span className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">The Business Scaler</span>
           <div className="flex items-baseline gap-1 mb-4 text-5xl font-black">$499<span className="text-sm text-gray-500 font-normal">/mo</span></div>
-          <p className="text-purple-100 text-sm mb-8 leading-relaxed">Your 24/7 AI Sales Team. Fully integrated with your CRM and Calendar. Replaces a $3k/mo human receptionist.</p>
+          <p className="text-green-100 text-sm mb-8 leading-relaxed">Your 24/7 AI Sales Team. Fully integrated with your CRM and Calendar. Replaces a $3k/mo human receptionist.</p>
           <div className="space-y-4 mb-10 flex-1">
-            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-purple-400" /> 1500 Minutes included</div>
-            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-purple-400" /> Unlimited Receptionists</div>
-            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-purple-400" /> CRM & Calendar Sync</div>
-            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-purple-400" /> Priority Emergency Routing</div>
+            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> 1500 Minutes included</div>
+            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Unlimited Receptionists</div>
+            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> CRM & Calendar Sync</div>
+            <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Priority Emergency Routing</div>
           </div>
           <button 
             onClick={() => handleCheckout('price_business_scaler_placeholder')}
             disabled={loading}
-            className="w-full py-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition shadow-xl shadow-purple-600/20 text-center"
+            className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold transition shadow-xl shadow-green-600/20 text-center"
           >
             {loading ? 'Processing...' : 'Go Pro Now'}
           </button>
@@ -121,7 +121,7 @@ export default function Checkout() {
 
       {/* Guarantee Badge */}
       <div className="mt-20 flex flex-col items-center gap-4 bg-white/[0.02] border border-white/10 p-8 rounded-3xl max-w-xl text-center">
-        <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center text-purple-500 mb-2">
+        <div className="w-16 h-16 bg-green-600/20 rounded-full flex items-center justify-center text-green-500 mb-2">
           <ShieldCheck size={32} />
         </div>
         <h3 className="text-xl font-bold">The 5-Job Guarantee</h3>
