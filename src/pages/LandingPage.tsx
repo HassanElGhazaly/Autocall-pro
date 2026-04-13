@@ -31,6 +31,12 @@ export default function LandingPage() {
   const [modalStep, setModalStep] = useState(1);
   const [confirmPhone, setConfirmPhone] = useState('');
 
+  // ROI Calculator State
+  const [missedCalls, setMissedCalls] = useState(5);
+  const [customerValue, setCustomerValue] = useState(500);
+
+  const annualLostRevenue = missedCalls * customerValue * 20 * 12; // Assuming 20 working days per month
+
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -90,10 +96,10 @@ export default function LandingPage() {
               {modalStep === 1 ? (
                 <div className="text-center">
                   <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <MessageSquare className="text-green-500" size={32} />
+                    <TrendingUp className="text-green-500" size={32} />
                   </div>
-                  <h3 className="text-2xl font-black mb-2">Excellent choice.</h3>
-                  <p className="text-gray-400 mb-8">Confirm the phone number you want to activate Text-Back for.</p>
+                  <h3 className="text-2xl font-black mb-2">Secure Your Strategy Call</h3>
+                  <p className="text-gray-400 mb-8">Confirm your phone number to book your 15-min strategy session and missed-call audit.</p>
                   
                   <form onSubmit={handleConfirmPhone} className="space-y-4">
                     <div className="relative">
@@ -112,7 +118,7 @@ export default function LandingPage() {
                       type="submit"
                       className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-black transition shadow-xl shadow-green-600/20"
                     >
-                      Confirm & Continue
+                      Book My Call Now
                     </button>
                   </form>
                 </div>
@@ -127,8 +133,8 @@ export default function LandingPage() {
                   </motion.div>
                   <h3 className="text-3xl font-black mb-4">Request received!</h3>
                   <div className="space-y-4 text-gray-400 leading-relaxed mb-8">
-                    <p>We are generating your setup invoice and sending it to your email.</p>
-                    <p className="text-white font-medium">Check your inbox to complete the activation.</p>
+                    <p>We are preparing your custom Missed-Call Audit report.</p>
+                    <p className="text-white font-medium">Check your inbox for the booking link to finalize your strategy call.</p>
                   </div>
                   <button 
                     onClick={() => setShowPricingModal(false)}
@@ -153,13 +159,14 @@ export default function LandingPage() {
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
           <button onClick={() => scrollToSection('how-it-works')} className="hover:text-white transition">How It Works</button>
+          <button onClick={() => scrollToSection('calculator')} className="hover:text-white transition">ROI Calculator</button>
           <button onClick={() => scrollToSection('features')} className="hover:text-white transition">Features</button>
           <button onClick={() => scrollToSection('pricing')} className="hover:text-white transition">Pricing</button>
           <button 
             onClick={handlePricingClick}
             className="bg-green-600/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-600 hover:text-white transition font-bold"
           >
-            Start Free Trial
+            Book Strategy Call
           </button>
         </div>
       </nav>
@@ -176,7 +183,7 @@ export default function LandingPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
-          Instant Lead Recovery for Small Businesses
+          Recover $10,000+ in Monthly Lost Revenue
         </motion.div>
         
         <motion.h1 
@@ -185,7 +192,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-6xl md:text-8xl font-black tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-gray-600"
         >
-          Stop Losing Customers <br className="hidden md:block" /> to Voicemail.
+          Stop Burning Cash <br className="hidden md:block" /> on Missed Calls.
         </motion.h1>
         
         <motion.p 
@@ -194,7 +201,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed"
         >
-          80% of callers won't leave a message—they just call your competitor. <span className="text-white font-bold">Autocall.pro</span> instantly texts them back, capturing the lead in 5 seconds.
+          Every missed call is a competitor's gain. We don't just text them back—we <span className="text-white font-bold">qualify and book them</span> for you. Turn your voicemail graveyard into a high-ROI sales machine.
         </motion.p>
 
         <motion.div 
@@ -207,15 +214,65 @@ export default function LandingPage() {
             onClick={handlePricingClick}
             className="bg-green-600 text-white font-bold px-10 py-4 rounded-full transition-all hover:bg-green-500 hover:scale-105 flex items-center gap-2 shadow-xl shadow-green-600/20"
           >
-            Start Your 7-Day Risk-Free Trial <ChevronRight size={18} />
+            Get My Free Missed-Call Audit <ChevronRight size={18} />
           </button>
           <button 
-            onClick={() => scrollToSection('how-it-works')}
+            onClick={() => scrollToSection('calculator')}
             className="bg-white/5 border border-white/10 text-white font-medium px-10 py-4 rounded-full hover:bg-white/10 transition"
           >
-            See How It Works
+            Calculate My Lost ROI
           </button>
         </motion.div>
+      </section>
+
+      {/* ROI Calculator Section */}
+      <section id="calculator" className="px-8 py-32 bg-green-600/5 border-y border-white/10">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4">The Cost of Doing Nothing</h2>
+            <p className="text-gray-400 text-lg">See exactly how much revenue you're losing to your competitors every year.</p>
+          </div>
+
+          <div className="bg-[#080808] border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8">
+                <div>
+                  <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Daily Missed Calls</label>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="50" 
+                    value={missedCalls}
+                    onChange={(e) => setMissedCalls(parseInt(e.target.value))}
+                    className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-green-500"
+                  />
+                  <div className="flex justify-between mt-2 text-xl font-black text-white">
+                    <span>{missedCalls}</span>
+                    <span className="text-gray-500 text-sm font-medium">Calls / Day</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Avg. Customer Value ($)</label>
+                  <input 
+                    type="number" 
+                    value={customerValue}
+                    onChange={(e) => setCustomerValue(parseInt(e.target.value) || 0)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 focus:outline-none focus:border-green-500 transition text-2xl font-black"
+                  />
+                </div>
+              </div>
+
+              <div className="text-center md:text-right p-8 bg-red-500/10 border border-red-500/20 rounded-2xl">
+                <p className="text-sm font-bold text-red-400 uppercase tracking-widest mb-2">Annual Lost Revenue</p>
+                <p className="text-5xl md:text-7xl font-black text-red-500 tabular-nums">
+                  ${annualLostRevenue.toLocaleString()}
+                </p>
+                <p className="text-gray-500 mt-4 text-sm italic">*Based on 20 working days per month</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* How It Works / Visual Mockup */}
@@ -376,37 +433,34 @@ export default function LandingPage() {
       {/* Pricing */}
       <section id="pricing" className="px-8 py-32 relative">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-green-500">Simple Pricing</h2>
-          <p className="text-gray-400 mb-16 text-lg">One saved job pays for the entire year.</p>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-green-500">Elite Setup</h2>
+          <p className="text-gray-400 mb-16 text-lg">The complete revenue recovery system for high-growth businesses.</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-            {/* Starter */}
-            <div className="p-10 rounded-3xl bg-white/[0.03] border border-white/10 flex flex-col items-start hover:border-white/20 transition">
-              <span className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Starter</span>
-              <div className="flex items-baseline gap-1 mb-4 text-4xl font-black">$97<span className="text-sm text-gray-500 font-normal">/mo</span></div>
-              <p className="text-gray-400 text-sm mb-8">Perfect for solo operators who need to capture every missed call.</p>
-              <div className="space-y-4 mb-10 flex-1">
-                <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> Missed Call Text-Back</div>
-                <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> 1 Local Number included</div>
-                <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> Unlimited Lead Recovery</div>
-                <div className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> Real-time Notifications</div>
-              </div>
-              <button onClick={handlePricingClick} className="w-full py-4 rounded-2xl border border-white/10 hover:bg-white hover:text-black font-bold transition text-center">Start 7-Day Free Trial</button>
-            </div>
-
-            {/* Business */}
+          <div className="max-w-2xl mx-auto">
             <div className="p-10 rounded-3xl bg-green-600/10 border-2 border-green-500/50 flex flex-col items-start relative overflow-hidden hover:bg-green-600/20 transition">
-              <div className="absolute top-4 right-4 bg-green-500 text-[10px] font-black px-3 py-1 rounded-full uppercase text-white">Most Popular</div>
-              <span className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">Business</span>
-              <div className="flex items-baseline gap-1 mb-4 text-5xl font-black">$197<span className="text-sm text-gray-500 font-normal">/mo</span></div>
-              <p className="text-green-100 text-sm mb-8">For growing teams looking to dominate their local market.</p>
-              <div className="space-y-4 mb-10 flex-1">
-                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Everything in Starter</div>
-                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> AI Web Chat Widget</div>
-                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> SMS Marketing Suite</div>
-                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Priority Support</div>
+              <div className="absolute top-4 right-4 bg-green-500 text-[10px] font-black px-3 py-1 rounded-full uppercase text-white">Full Service</div>
+              <span className="text-xs font-bold uppercase tracking-widest text-green-400 mb-2">Elite Setup Plan</span>
+              <div className="flex flex-col mb-8">
+                <div className="flex items-baseline gap-2 text-5xl font-black">$497<span className="text-sm text-gray-500 font-normal uppercase tracking-widest">One-time Setup</span></div>
+                <div className="flex items-baseline gap-1 text-2xl font-black text-white/60">+$97<span className="text-sm text-gray-500 font-normal">/mo maintenance</span></div>
               </div>
-              <button onClick={handlePricingClick} className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold transition shadow-xl shadow-green-600/20 text-center">Start 7-Day Free Trial</button>
+              
+              <p className="text-green-100 text-sm mb-8">We build, deploy, and manage your entire lead recovery infrastructure.</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 w-full">
+                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Instant SMS Back</div>
+                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> AI Lead Qualification</div>
+                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> CRM Integration</div>
+                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> Custom Dashboard</div>
+                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> 24/7 Support</div>
+                <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> 1 Local Number</div>
+              </div>
+              
+              <button onClick={handlePricingClick} className="w-full py-5 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-black transition shadow-xl shadow-green-600/20 text-center text-lg">
+                Book My Setup Call Now
+              </button>
+              
+              <p className="w-full text-center mt-6 text-xs text-gray-500 font-medium">Limited to 5 new clients per month to ensure quality.</p>
             </div>
           </div>
         </div>
@@ -418,15 +472,15 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <ShieldCheck size={120} />
           </div>
-          <h3 className="text-3xl md:text-5xl font-black mb-6 text-white">The Lead-Capture Guarantee</h3>
+          <h3 className="text-3xl md:text-5xl font-black mb-6 text-white">No-Risk Guarantee</h3>
           <p className="text-xl text-gray-200 leading-relaxed mb-8">
-            Try Autocall.pro for 7 days. If you don't capture at least <span className="text-green-400 font-bold">3 leads</span> that would have otherwise gone to voicemail, we'll cancel your trial and you won't pay a cent.
+            If we don't recover <span className="text-green-400 font-bold">5+ leads</span> in your first 14 days, you get a <span className="text-white font-bold">100% refund</span> on the setup fee. No questions asked.
           </p>
           <button 
             onClick={handlePricingClick}
             className="bg-white text-black font-black px-12 py-5 rounded-full hover:bg-green-500 hover:text-white transition-all flex items-center gap-2 mx-auto"
           >
-            Start Your 7-Day Risk-Free Trial <ArrowRight size={20} />
+            Get My Free Missed-Call Audit <ArrowRight size={20} />
           </button>
         </div>
       </section>
