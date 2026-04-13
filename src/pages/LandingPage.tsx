@@ -20,9 +20,13 @@ import {
   DollarSign,
   CheckCircle2,
   Smartphone,
-  MousePointer2
+  MousePointer2,
+  Globe,
+  Mail,
+  User
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { supabase } from '../lib/supabase';
 
 export default function LandingPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -31,11 +35,65 @@ export default function LandingPage() {
   const [modalStep, setModalStep] = useState(1);
   const [confirmPhone, setConfirmPhone] = useState('');
 
+  // Audit Modal State
+  const [showAuditModal, setShowAuditModal] = useState(false);
+  const [auditForm, setAuditForm] = useState({
+    name: '',
+    email: '',
+    website: ''
+  });
+  const [isAuditSubmitting, setIsAuditSubmitting] = useState(false);
+  const [auditSuccess, setAuditSuccess] = useState(false);
+
   // ROI Calculator State
   const [missedCalls, setMissedCalls] = useState(5);
   const [customerValue, setCustomerValue] = useState(500);
 
   const annualLostRevenue = missedCalls * customerValue * 20 * 12; // Assuming 20 working days per month
+
+  const trackClick = async (offerType: 'audit' | 'strategy_call') => {
+    try {
+      await supabase.from('cta_clicks').insert([
+        { offer_type: offerType, clicked_at: new Date().toISOString() }
+      ]);
+    } catch (error) {
+      console.error('Error tracking click:', error);
+    }
+  };
+
+  const handleAuditClick = () => {
+    trackClick('audit');
+    setShowAuditModal(true);
+    setAuditSuccess(false);
+  };
+
+  const handleStrategyCallClick = () => {
+    trackClick('strategy_call');
+    window.open('https://calendly.com/autocall-pro/15min', '_blank');
+  };
+
+  const handleAuditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuditSubmitting(true);
+    try {
+      const { error } = await supabase.from('audits').insert([
+        { 
+          name: auditForm.name, 
+          email: auditForm.email, 
+          website: auditForm.website,
+          created_at: new Date().toISOString()
+        }
+      ]);
+      if (error) throw error;
+      setAuditSuccess(true);
+      setAuditForm({ name: '', email: '', website: '' });
+    } catch (error) {
+      console.error('Error submitting audit:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setIsAuditSubmitting(false);
+    }
+  };
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +127,108 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white selection:bg-green-500/30 font-sans overflow-x-hidden">
+      {/* Audit Modal */}
+      <AnimatePresence>
+        {showAuditModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAuditModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-[#080808] border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden"
+            >
+              <button 
+                onClick={() => setShowAuditModal(false)}
+                className="absolute top-6 right-6 text-gray-500 hover:text-white transition"
+              >
+                <X size={24} />
+              </button>
+
+              {!auditSuccess ? (
+                <div>
+                  <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <ShieldCheck className="text-green-500" size={32} />
+                  </div>
+                  <h3 className="text-2xl font-black mb-2 text-center">Free Missed-Call Audit</h3>
+                  <p className="text-gray-400 mb-8 text-center">Enter your details and we'll analyze your current lead recovery performance.</p>
+                  
+                  <form onSubmit={handleAuditSubmit} className="space-y-4">
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                      <input 
+                        type="text" 
+                        required
+                        value={auditForm.name}
+                        onChange={(e) => setAuditForm({ ...auditForm, name: e.target.value })}
+                        placeholder="Full Name"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition font-bold"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                      <input 
+                        type="email" 
+                        required
+                        value={auditForm.email}
+                        onChange={(e) => setAuditForm({ ...auditForm, email: e.target.value })}
+                        placeholder="Business Email"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition font-bold"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                      <input 
+                        type="url" 
+                        required
+                        value={auditForm.website}
+                        onChange={(e) => setAuditForm({ ...auditForm, website: e.target.value })}
+                        placeholder="Website URL (https://...)"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-green-500 transition font-bold"
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      disabled={isAuditSubmitting}
+                      className="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-black transition shadow-xl shadow-green-600/20 disabled:opacity-50"
+                    >
+                      {isAuditSubmitting ? 'Processing...' : 'Generate My Audit'}
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <motion.div 
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20"
+                  >
+                    <CheckCircle2 className="text-white" size={40} />
+                  </motion.div>
+                  <h3 className="text-3xl font-black mb-4">Audit Requested!</h3>
+                  <div className="space-y-4 text-gray-400 leading-relaxed mb-8">
+                    <p>We've received your request and our team is starting the analysis.</p>
+                    <p className="text-white font-medium">Expect your custom report in your inbox within 24 hours.</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowAuditModal(false)}
+                    className="px-8 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition"
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Pricing Modal */}
       <AnimatePresence>
         {showPricingModal && (
@@ -163,7 +323,7 @@ export default function LandingPage() {
           <button onClick={() => scrollToSection('features')} className="hover:text-white transition">Features</button>
           <button onClick={() => scrollToSection('pricing')} className="hover:text-white transition">Pricing</button>
           <button 
-            onClick={handlePricingClick}
+            onClick={handleStrategyCallClick}
             className="bg-green-600/10 text-green-500 border border-green-500/20 px-4 py-2 rounded-lg hover:bg-green-600 hover:text-white transition font-bold"
           >
             Book Strategy Call
@@ -211,7 +371,7 @@ export default function LandingPage() {
           className="flex flex-col sm:flex-row gap-5 justify-center items-center"
         >
           <button 
-            onClick={handlePricingClick}
+            onClick={handleAuditClick}
             className="bg-green-600 text-white font-bold px-10 py-4 rounded-full transition-all hover:bg-green-500 hover:scale-105 flex items-center gap-2 shadow-xl shadow-green-600/20"
           >
             Get My Free Missed-Call Audit <ChevronRight size={18} />
@@ -456,7 +616,7 @@ export default function LandingPage() {
                 <div className="flex items-center gap-3 text-gray-100 font-medium"><Check size={18} className="text-green-400" /> 1 Local Number</div>
               </div>
               
-              <button onClick={handlePricingClick} className="w-full py-5 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-black transition shadow-xl shadow-green-600/20 text-center text-lg">
+              <button onClick={handleStrategyCallClick} className="w-full py-5 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-black transition shadow-xl shadow-green-600/20 text-center text-lg">
                 Book My Setup Call Now
               </button>
               
@@ -477,7 +637,7 @@ export default function LandingPage() {
             If we don't recover <span className="text-green-400 font-bold">5+ leads</span> in your first 14 days, you get a <span className="text-white font-bold">100% refund</span> on the setup fee. No questions asked.
           </p>
           <button 
-            onClick={handlePricingClick}
+            onClick={handleAuditClick}
             className="bg-white text-black font-black px-12 py-5 rounded-full hover:bg-green-500 hover:text-white transition-all flex items-center gap-2 mx-auto"
           >
             Get My Free Missed-Call Audit <ArrowRight size={20} />
